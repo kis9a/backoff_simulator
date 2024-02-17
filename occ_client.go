@@ -20,9 +20,9 @@ func (self *OccClient) start(tm float64) *OccRequest {
 	return &OccRequest{
 		time:    tm + self.net.delay(),
 		sendTo:  self.server.read,
+		replyTo: self.readRsp,
 		version: 0,
 		succ:    false,
-		client:  self,
 	}
 }
 
@@ -30,9 +30,9 @@ func (self *OccClient) readRsp(tm float64, req *OccRequest) *OccRequest {
 	return &OccRequest{
 		time:    tm + self.net.delay(),
 		sendTo:  self.server.write,
+		replyTo: self.writeRsp,
 		version: req.version,
-		succ:    false,
-		client:  self,
+		succ:    req.succ,
 	}
 }
 
@@ -44,9 +44,9 @@ func (self *OccClient) writeRsp(tm float64, req *OccRequest) *OccRequest {
 		return &OccRequest{
 			time:    tm + self.net.delay() + self.backoff.backoff(self.attempt),
 			sendTo:  self.server.read,
+			replyTo: self.readRsp,
 			version: req.version,
-			succ:    false,
-			client:  self,
+			succ:    req.succ,
 		}
 	}
 }

@@ -25,8 +25,9 @@ func (self *OccServer) read(tm float64, req *OccRequest) *OccRequest {
 	return &OccRequest{
 		time:    tm + self.net.delay(),
 		version: self.version,
-		client:  req.client,
-		sendTo:  req.client.readRsp,
+		succ:    req.succ,
+		sendTo:  req.replyTo,
+		replyTo: nil,
 	}
 }
 
@@ -44,7 +45,7 @@ func (self *OccServer) write(tm float64, req *OccRequest) *OccRequest {
 		time:    tm + self.net.delay(),
 		version: self.version,
 		succ:    success,
-		client:  req.client,
-		sendTo:  req.client.writeRsp,
+		sendTo:  req.replyTo,
+		replyTo: nil,
 	}
 }
